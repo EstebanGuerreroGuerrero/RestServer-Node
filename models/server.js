@@ -22,7 +22,7 @@ class Server {
 
 
         // Directorio Publico
-        this.app.use( express.static('public') );
+        app.use('/static', express.static(__dirname + '/public'));
 
     }
 
