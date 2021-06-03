@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 
 
 
@@ -17,8 +17,8 @@ class Server {
 
     middlewares() {
 
-        // ---> CORS: Restringe el acceso a la API, nosotros elegimos que sitios pueden acceder a este backend.
-        // ---> this.app.use( cors() );
+        // CORS: Restringe el acceso a la API, nosotros elegimos que sitios pueden acceder a este backend.
+        this.app.use( cors() );
 
 
         // Directorio Publico
