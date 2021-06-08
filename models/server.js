@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 
 
@@ -11,6 +12,9 @@ class Server {
         this.port = process.env.PORT;
         this.usuariosPath = '/api/usuarios';
 
+        // Conectar a la BD
+        this.conectarDB();
+
         // Middlewares
         this.middlewares();
 
@@ -19,26 +23,30 @@ class Server {
     }
 
 
-    middlewares() {
+    async conectarDB() {
 
+        // <--- Aquí podemos crear mas conexiones para, POR EJEMPLO: si estamos en PRODUCCIÓN utilizar una BD u otra si estamos en DESARROLLO.
+       
+        await dbConnection();
+
+    }
+
+
+    middlewares() {
         // CORS: Restringe el acceso a la API, nosotros elegimos que sitios pueden acceder a este backend.
         this.app.use( cors() );
 
-
         // Directorio Publico
         this.app.use( express.static('public') );
-
     }
 
 
-
+    // Rutas
     routes() {
-
-        this.app.use( this.usuariosPath , require('../routes/usuarios-routes') );
-
+        this.app.use( this.usuariosPath , express.json() , require('../routes/usuarios-routes') );
     }
 
-
+    // Escuchar puertoS
     listen() {
         this.app.listen( this.port , () => {
             console.log('Servidor corriendo en el puerto: ', process.env.PORT );
