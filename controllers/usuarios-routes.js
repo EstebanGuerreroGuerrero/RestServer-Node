@@ -1,9 +1,12 @@
 const { response , request } = require('express');
+const bcryptjs = require('bcryptjs');
+;
 
 const Usuario = require('../models/usuario');
 
 
-    // Leer la BD
+
+    // Leer la BD ------------------------------------------------------------------
     const usuariosGET = ( req = request , res = response ) => {
         
             // URL de ejemplo :  http://localhost:8080/api/usuarios?q=hola&name=stebe&page=20&limit=5
@@ -26,23 +29,40 @@ const Usuario = require('../models/usuario');
     // Guardar un Usuario en la BD -------------------------------------------------
     const usuariosPOST = async ( req = request , res = response ) => {
 
-        // const { nombre, correo, password, rol } = req.body; // Elegimos que informacion queremos guardar en la BD, a modo de VALIDACIÓN.
-        // const usuario = new Usuario( { nombre, correo, password, rol } );    // ¡ Hay que instansear el modelo del usuario !         
-        
-                    const body = req.body;              //----> Si quisieramos guardar todo el objeto 
-                    const usuario = new Usuario( body );
-        
 
+                                        /*  const body = req.body;                  ----> Si quisieramos guardar todo el objeto
+                                            const usuario = new Usuario( body );
 
+                                            const { nombre ...rest }                ----> O tamben asi
+                                            const usuario = new Usuario( rest );
+                                        */
+
+        const { nombre, correo, password, rol } = req.body; // Elegimos que informacion queremos guardar en la BD, a modo de VALIDACIÓN.
+        const usuario = new Usuario( { nombre, correo, password, rol } );    // ¡ Hay que instansear el modelo del usuario !         
+                           
+        
+        // Verificar si el correo existe
+        const existeEmail = await Usuario.findOne({ correo });
+        if ( existeEmail ) {
+            return res.status(400).json({
+                msg: 'Ese correo ya está registrado'
+            });
+        }
+
+        // Encriptar la contraseña
+        const salt = bcryptjs.genSaltSync(10);
+        usuario.password = bcryptjs.hashSync( password , salt );
+        
+        // Guardar en DB                                                   
         await usuario.save(); // mongoose guarda en la bd el modelo del usuario ya lleno con la info.
 
         res.json({           
-            body
-        //  usuario
+        //  body
+            usuario
         });
         
     }
-    
+
 
     const usuariosPUT = ( req = request , res = response ) => {
 

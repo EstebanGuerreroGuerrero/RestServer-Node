@@ -25,5 +25,11 @@ const UsuarioSchema = Schema({
     }
 });
 
+// Validacion de seguridad: Esto se utiliza para ocultar o mas bien, no retornar datos delicados al FRONT
+UsuarioSchema.methods.toJSON = function() {
+    const { __v , password , ...usuario } = this.toObject();
+    return usuario;
+}
+
 
 module.exports = model( 'Usuario' , UsuarioSchema );
