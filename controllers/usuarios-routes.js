@@ -1,9 +1,6 @@
 const { response , request } = require('express');
 const bcryptjs = require('bcryptjs');
-;
-
 const Usuario = require('../models/usuario');
-
 
 
     // Leer la BD ------------------------------------------------------------------
@@ -40,14 +37,6 @@ const Usuario = require('../models/usuario');
         const { nombre, correo, password, rol } = req.body; // Elegimos que informacion queremos guardar en la BD, a modo de VALIDACIÓN.
         const usuario = new Usuario( { nombre, correo, password, rol } );    // ¡ Hay que instansear el modelo del usuario !         
                            
-        
-        // Verificar si el correo existe
-        const existeEmail = await Usuario.findOne({ correo });
-        if ( existeEmail ) {
-            return res.status(400).json({
-                msg: 'Ese correo ya está registrado'
-            });
-        }
 
         // Encriptar la contraseña
         const salt = bcryptjs.genSaltSync(10);
@@ -64,14 +53,22 @@ const Usuario = require('../models/usuario');
     }
 
 
-    const usuariosPUT = ( req = request , res = response ) => {
+    const usuariosPUT = async ( req = request , res = response ) => {
 
-        const IDusuario = req.params.IDusuario;   // Tambien podemos sesestructurar todos los parametros que vengan en la url asi:
-                                    // const { id, otracosa, etc } = req.params;
+        const { id } = req.params;
+        const { _id, password, google, correo, ...resto } = req.body; // Excluimos _id, pass, google, etc y enviamos el resto de datos para que se actualicen
+
+        if( password ) {
+            // Encriptar la contraseña
+            const salt = bcryptjs.genSaltSync(10);
+            resto.password = bcryptjs.hashSync( password , salt );
+        }
+
+        const usuario = await Usuario.findOneAndUpdate( id , resto );
 
         res.json({              
             msg: 'put API - controlador',
-            IDusuario
+            usuario
         });
     }
 

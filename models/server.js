@@ -24,11 +24,8 @@ class Server {
 
 
     async conectarDB() {
-
         // <--- Aquí podemos crear mas conexiones para, POR EJEMPLO: si estamos en PRODUCCIÓN utilizar una BD u otra si estamos en DESARROLLO.
-       
         await dbConnection();
-
     }
 
 
