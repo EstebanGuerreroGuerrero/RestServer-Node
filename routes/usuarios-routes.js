@@ -37,7 +37,11 @@ const router = Router();
     router.patch( '/' , usuariosPATCH );
 
     // Borrar
-    router.delete( '/' , usuariosDELETE );
+    router.delete( '/:id' ,[
+        check('id' , 'No es un ID valido por mongo').isMongoId(),
+        check('id').custom( idExiste ), 
+        validarCampos
+    ], usuariosDELETE );
             //       status() = Tambie se pueden mandar los status de las peticiones, para que el programador front end tenga informacion.
 
 module.exports = router;

@@ -4,21 +4,40 @@ const Usuario = require('../models/usuario');
 
 
     // Leer la BD ------------------------------------------------------------------
-    const usuariosGET = ( req = request , res = response ) => {
+    const usuariosGET = async ( req = request , res = response ) => {
         
-            // URL de ejemplo :  http://localhost:8080/api/usuarios?q=hola&name=stebe&page=20&limit=5
-            // Asi se recojen los parametros opcionales de la URL
-                const { q , name = 'No Name', page = 1 , limit } = req.params;
-        //                              |            |
-        //                              ---- --- -----> Si no nos envian dichos valores, se le podemos poner un valor por defecto.
-        //                                                -------------- DESESTRUCTURACIÓN -----------
-                res.json({              
-                    msg: 'get API - controlador',
-                    name,
-                    q,
-                    page,
-                    limit
-                });
+                                                                                                // URL de ejemplo :  http://localhost:8080/api/usuarios?q=hola&name=stebe&page=20&limit=5
+                                                                                                
+                                                                                                //          Asi se recojen los parametros opcionales de la URL:
+                                                                                                //          const { q , name = 'No Name', page = 1 , limit } = req.params;
+                                                                                            //                              |            |
+                                                                                            //                              ---- --- -----> Si no nos envian dichos valores, se le podemos poner un valor por defecto.
+                                                                                            //                                                -------------- DESESTRUCTURACIÓN -----------
+
+
+        // Limitar resultados 
+            const { limite = 5 , desde = 0 } = req.query; 
+            const estadoActivo = { estado: true };
+            
+    /*    const usuarios = await Usuario.find( estadoActivo )
+                    .skip( Number( desde ) )
+                    .limit( Number( limite ) );
+
+            const total = await Usuario.countDocuments( estadoActivo ); // Cuantos registros hay en la BD
+    */
+//  Lo convertimos en lo siguiente, uniendo ambas en esta promesa gigante (coleccion de promesas).
+            const [ total, usuarios ] = await Promise.all([ // Desestructuracion de arreglos: Le asignamos un nombre al resultado de la primera promesa, y lo mismo con la segunda. En orden.
+                Usuario.countDocuments( estadoActivo ),
+                Usuario.find( estadoActivo )
+                    .skip( Number( desde ) )
+                    .limit( Number( limite ) )
+            ])
+
+            res.json({              
+                msg: 'get API - controlador',
+                total,
+                usuarios
+            });
 
     }
 
@@ -47,6 +66,7 @@ const Usuario = require('../models/usuario');
 
         res.json({           
         //  body
+            msg: 'post API - controlador',
             usuario
         });
         
@@ -78,9 +98,19 @@ const Usuario = require('../models/usuario');
         });
     }
 
-    const usuariosDELETE = ( req = request , res = response ) => {
+    const usuariosDELETE = async ( req = request , res = response ) => {
+
+        const { id } = req.params;
+
+        // Borramos usuario de la BD (no recomendable)
+        //      const usuario = await Usuario.findByIdAndDelete( id )
+
+        // Cambiamos el estado del usuario
+            const usuario = await Usuario.findByIdAndUpdate( id , { estado: false } );
+            
         res.json({              
-            msg: 'delete API - controlador'
+            msg: 'delete API - controlador',
+            usuario
         });
     }
 
