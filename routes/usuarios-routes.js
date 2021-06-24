@@ -1,11 +1,27 @@
 const { Router } = require('express'); // Extraimos una funcion de express llamada Router
 const { check } = require('express-validator');
 
-const { usuariosGET, usuariosPOST, usuariosPUT, usuariosPATCH, usuariosDELETE } = require('../controllers/usuarios-routes');
-const { validarCampos } = require('../middlewares/validar-campos');
-const { esRoleValido, mailExiste, idExiste } = require('../helpers/db-validators');
+
+const { validarCampos,
+        validarJWT,
+        esAdmin,
+        tieneRol } = require('../middlewares'); // TODO esto solo es para importar una carpeta completa en una sola importacion...
+
+const { esRoleValido , mailExiste , idExiste } = require('../helpers/db-validators');
+
+
+const { usuariosGET, 
+        usuariosPOST, 
+        usuariosPUT, 
+        usuariosPATCH, 
+        usuariosDELETE } = require('../controllers/usuarios-controller');
 
 const router = Router(); 
+
+
+
+
+
 
     // EndPoints GET, POST, DELETE, etc.
 // EJEMPLO:
@@ -38,6 +54,9 @@ const router = Router();
 
     // Borrar
     router.delete( '/:id' ,[
+        validarJWT,
+        //esAdmin, ----> Validacion ADMIN
+        tieneRol('ADMIN_ROLE' , 'VENTAS_ROLE'), // Validacion X roles.
         check('id' , 'No es un ID valido por mongo').isMongoId(),
         check('id').custom( idExiste ), 
         validarCampos

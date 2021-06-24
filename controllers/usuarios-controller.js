@@ -102,15 +102,20 @@ const Usuario = require('../models/usuario');
 
         const { id } = req.params;
 
+
         // Borramos usuario de la BD (no recomendable)
         //      const usuario = await Usuario.findByIdAndDelete( id )
 
         // Cambiamos el estado del usuario
             const usuario = await Usuario.findByIdAndUpdate( id , { estado: false } );
+
+        // Ver que usuario es el que esta autenticado
+            const usuarioAutenticado = req.usuario;
             
         res.json({              
             msg: 'delete API - controlador',
-            usuario
+            usuario,
+            usuarioAutenticado
         });
     }
 
