@@ -25,24 +25,26 @@ const Usuario = require('../models/usuario');
 
             const total = await Usuario.countDocuments( estadoActivo ); // Cuantos registros hay en la BD
     */
-//  Lo convertimos en lo siguiente, uniendo ambas en esta promesa gigante (coleccion de promesas).
-            const [ total, usuarios ] = await Promise.all([ // Desestructuracion de arreglos: Le asignamos un nombre al resultado de la primera promesa, y lo mismo con la segunda. En orden.
+
+    // Lo convertimos en lo siguiente, uniendo ambas en esta promesa gigante (coleccion de promesas).
+            const [ total, usuarios ] = await Promise.all([ // Desestructuracion de arreglos: Le asignamos un nombre al resultado de la primera promesa(total), y lo mismo con la segunda(usuarios). En orden.
                 Usuario.countDocuments( estadoActivo ),
                 Usuario.find( estadoActivo )
                     .skip( Number( desde ) )
                     .limit( Number( limite ) )
             ])
 
-            res.json({              
-                msg: 'get API - controlador',
-                total,
-                usuarios
-            });
+            
+    res.json({              
+        msg: 'get API - controlador',
+        total,
+        usuarios
+    });
 
     }
 
 
-    // Guardar un Usuario en la BD -------------------------------------------------
+    // Crear un Usuario en la BD -------------------------------------------------
     const usuariosPOST = async ( req = request , res = response ) => {
 
 
@@ -78,7 +80,7 @@ const Usuario = require('../models/usuario');
         const { id } = req.params;
         const { _id, password, google, correo, ...resto } = req.body; // Excluimos _id, pass, google, etc y enviamos el resto de datos para que se actualicen
 
-        if( password ) {
+        if( password ) { // Se trabaja la contraseña, ya que esta debe encriptarse SIEMPRE
             // Encriptar la contraseña
             const salt = bcryptjs.genSaltSync(10);
             resto.password = bcryptjs.hashSync( password , salt );

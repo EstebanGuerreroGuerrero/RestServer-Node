@@ -7,7 +7,7 @@ const { validarCampos,
         esAdmin,
         tieneRol } = require('../middlewares'); // TODO esto solo es para importar una carpeta completa en una sola importacion...
 
-const { esRoleValido , mailExiste , idExiste } = require('../helpers/db-validators');
+const { esRoleValido , mailExiste , usuarioExiste } = require('../helpers/db-validators');
 
 
 const { usuariosGET, 
@@ -30,37 +30,53 @@ const router = Router();
     // Leer
     router.get( '/' , usuariosGET );
 
+
     // Escribir
-    router.post( '/' , [
-        // ---- Validaciones -----
-        check('nombre'),
-        check('password' , 'Password de minimo 6 caracteres').isLength({ min: 6}),
-        check('correo' , 'El correo no es válido').isEmail(),
-        check('correo').custom( mailExiste ),
-        // check('rol' , 'No es un rol válido').isIn([ 'ADMIN_ROLE', 'USER_ROLE' ]),
-        check('rol').custom( esRoleValido ),
-        validarCampos
-    ] , usuariosPOST );
+    router.post( '/' , 
+        [
+            // ---- Validaciones -----
+            check('nombre'),
+            check('password' , 'Password de minimo 6 caracteres').isLength({ min: 6}),
+            check('correo' , 'El correo no es válido').isEmail(),
+            check('correo').custom( mailExiste ),
+            // check('rol' , 'No es un rol válido').isIn([ 'ADMIN_ROLE', 'USER_ROLE' ]),
+            check('rol').custom( esRoleValido ),
+            validarCampos
+        ] , 
+            usuariosPOST );
+
+
 
     // Actualizar
-    router.put( '/:id' , [
-        // Aqui checkeamos todos los datos que queramos validar
-        check('id' , 'No es un ID valido por mongo').isMongoId(),
-        check('id').custom( idExiste ), 
-        validarCampos
-    ], usuariosPUT ); // :id express recoje este valor que viene en la URL para poder utilizarlo.
+    router.put( '/:id' , // :id express recoje este valor que viene en la URL para poder utilizarlo.
+        [
+            // Aqui checkeamos todos los datos que queramos validar
+            check('id' , 'No es un ID valido por mongo').isMongoId(),
+            check('id').custom( usuarioExiste ), 
+            validarCampos
+        ], 
+            usuariosPUT ); 
+
+
 
     router.patch( '/' , usuariosPATCH );
 
+
+
     // Borrar
-    router.delete( '/:id' ,[
-        validarJWT,
-        //esAdmin, ----> Validacion ADMIN
-        tieneRol('ADMIN_ROLE' , 'VENTAS_ROLE'), // Validacion X roles.
-        check('id' , 'No es un ID valido por mongo').isMongoId(),
-        check('id').custom( idExiste ), 
-        validarCampos
-    ], usuariosDELETE );
-            //       status() = Tambie se pueden mandar los status de las peticiones, para que el programador front end tenga informacion.
+    router.delete( '/:id' ,
+        [
+            validarJWT,
+            //esAdmin, ----> Validacion ADMIN aquí
+            tieneRol('ADMIN_ROLE' , 'VENTAS_ROLE'), // Validacion X roles.
+            check('id' , 'No es un ID valido por mongo').isMongoId(),
+            check('id').custom( usuarioExiste ), 
+            validarCampos
+        ] , 
+            usuariosDELETE );
+                //       status() = Tambie se pueden mandar los status de las peticiones, para que el programador front end tenga informacion.
+
+
+
 
 module.exports = router;
