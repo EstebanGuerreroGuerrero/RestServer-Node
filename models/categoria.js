@@ -18,4 +18,4 @@ const CategoriaSchema = Schema({
     }
 });
 
-module.exports = model( 'Categoria' , CategoriaSchema);
+module.exports = model( 'Categoria' , CategoriaSchema );

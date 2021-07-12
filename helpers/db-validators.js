@@ -1,6 +1,7 @@
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
 const Categoria = require('../models/categoria');
+const Producto = require('../models/producto');
 
 
     /**
@@ -41,9 +42,22 @@ const Categoria = require('../models/categoria');
     }
 
 
+/**
+ * Validaciones de PRODUCTOS
+ */
+ const existeProducto = async( id ) => {
+    const existeID = await Producto.findById( id );
+    if ( !existeID ) {
+        throw new Error(`El Producto con id: ${ id }, no esta registrado en la BD.`);
+    }
+}
+
+
+
 module.exports = {
     esRoleValido,
     mailExiste,
     usuarioExiste,
-    existeCategoria
+    existeCategoria,
+    existeProducto
 }

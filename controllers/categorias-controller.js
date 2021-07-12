@@ -1,7 +1,6 @@
 const { response , request } = require('express');
-const { findByIdAndUpdate } = require('../models/categoria');
 
-const   Categoria = require('../models/categoria');
+const Categoria = require('../models/categoria');
 
 
 
@@ -53,7 +52,7 @@ const   Categoria = require('../models/categoria');
         ]);
 
         res.json({
-            msg: 'crearCategoria exitoso',
+            msg: 'obtenerCategorias exitoso',
             total,
             categorias
         });
@@ -100,7 +99,7 @@ const   Categoria = require('../models/categoria');
         const { id } = req.params;
 
         // Cambiamos el estado de la categoria (no recomendable eliminar del todo)
-        const categoria = await Categoria.findByIdAndUpdate( id , { estado: false } );
+        const categoria = await Categoria.findByIdAndUpdate( id , { estado: false } , { new: true } );
 
         // Ver que usuario esta autenticado
         //const usuarioAutenticado = req.usuario;
