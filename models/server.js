@@ -12,12 +12,14 @@ class Server {
         this.app            = express();
         this.port           = process.env.PORT;
 
-        this.usuariosPath   = '/api/usuarios';
         this.authPath       = '/api/auth';
+        this.buscarPath     = '/api/buscar';
         this.categoriasPath = '/api/categorias';
         this.productosPath  = '/api/productos';
+        this.usuariosPath   = '/api/usuarios';
+        
+       
     
-
         // Conectar a la BD
         this.conectarDB();
 
@@ -50,9 +52,10 @@ class Server {
     // Rutas
     routes() {
         this.app.use( this.authPath , express.json() , require('../routes/auth-routes') );
-        this.app.use( this.usuariosPath , express.json() , require('../routes/usuarios-routes') );
+        this.app.use( this.buscarPath , express.json() , require('../routes/buscar-routes') );
         this.app.use( this.categoriasPath , express.json() , require('../routes/categorias-routes') );
         this.app.use( this.productosPath , express.json() , require('../routes/productos-routes') );
+        this.app.use( this.usuariosPath , express.json() , require('../routes/usuarios-routes') );
     }
 
 
