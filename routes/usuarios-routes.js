@@ -31,7 +31,7 @@ const router = Router();
     router.get( '/' , usuariosGET );
 
 
-    // Escribir
+    // Crear user
     router.post( '/' , 
         [
             // ---- Validaciones -----
@@ -45,7 +45,7 @@ const router = Router();
         ] , 
             usuariosPOST );
 
-
+  
 
     // Actualizar
     router.put( '/:id' , // :id express recoje este valor que viene en la URL para poder utilizarlo.

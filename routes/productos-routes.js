@@ -59,7 +59,7 @@ const router = Router();
 
 
     // BORRAR producto - Admi
-    router.delete( '/:id' , // ******** TIRA ERROR DE ID 
+    router.delete( '/:id' ,
         [
             validarJWT,
             // esAdmin,

@@ -86,7 +86,7 @@ const Producto = require('../models/producto');
     }
 
     // BORRAR
-    const borrarProducto = async ( res , req = request ) => {
+    const borrarProducto = async ( req , res ) => {
         
         const { id } = req.params;
         const producto = await Producto.findByIdAndUpdate( id , { estado: false } , { new: true } );

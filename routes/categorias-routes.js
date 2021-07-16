@@ -53,7 +53,7 @@ const router = Router();
 
 
     // ACTUALIZAR categoría - privado - cualquiera con un token válido
-    router.put( '/:id' ,  // ******** TIRA ERROR
+    router.put( '/:id' , 
         [
             validarJWT,
             esAdmin,

@@ -9,14 +9,26 @@ class Server {
     
     constructor() {
         // Aqui para convertir cualquier cosa en una variable que queramos utilizar en muchos lados por ejemplo:
-        this.app            = express();
-        this.port           = process.env.PORT;
+        this.app    = express();
+        this.port   = process.env.PORT;
 
+        this.usuariosPath   = '/api/usuarios';
         this.authPath       = '/api/auth';
-        this.buscarPath     = '/api/buscar';
         this.categoriasPath = '/api/categorias';
         this.productosPath  = '/api/productos';
-        this.usuariosPath   = '/api/usuarios';
+        this.buscarPath     = '/api/buscar';
+        this.cargarPath     = '/api/cargar';
+
+        // FORMA de reutilizar mas el codigo
+        // this.paths  = {
+        //     auth :       '/api/auth',
+        //     buscar :     '/api/buscar',
+        //     categorias : '/api/categorias',
+        //     productos :  '/api/productos',
+        //     usuarios :   '/api/usuarios',
+        //     cargar :     '/api/cargar',
+        // }
+       
         
        
     
@@ -51,11 +63,20 @@ class Server {
 
     // Rutas
     routes() {
+        this.app.use( this.usuariosPath , express.json() , require('../routes/usuarios-routes') );
         this.app.use( this.authPath , express.json() , require('../routes/auth-routes') );
-        this.app.use( this.buscarPath , express.json() , require('../routes/buscar-routes') );
         this.app.use( this.categoriasPath , express.json() , require('../routes/categorias-routes') );
         this.app.use( this.productosPath , express.json() , require('../routes/productos-routes') );
-        this.app.use( this.usuariosPath , express.json() , require('../routes/usuarios-routes') );
+        this.app.use( this.buscarPath , express.json() , require('../routes/buscar-routes') );
+        this.app.use( this.cargarPath , express.json() , require('../routes/cargar-routes') );
+        
+        // FORMA de reutilizar mas el codigo
+        // this.app.use( this.paths.auth , require('../routes/auth-routes') );
+        // this.app.use( this.paths.buscar , require('../routes/buscar-routes') );
+        // this.app.use( this.paths.categorias , require('../routes/categorias-routes') );
+        // this.app.use( this.paths.productos , require('../routes/productos-routes') );
+        // this.app.use( this.paths.usuarios , require('../routes/usuarios-routes') );
+        // this.app.use( this.paths.cargar , require('../routes/cargar-routes') );
     }
 
 
