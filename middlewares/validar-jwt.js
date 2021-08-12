@@ -1,13 +1,13 @@
-const { request, response } = require('express');
+const { request , response } = require('express');
 const jwt = require('jsonwebtoken');
 
 const Usuario = require('../models/usuario');
 
 
-// TODO ESTO: Seguridad - Asegurar que la persona que esta haciendo modificaciones este logeado (con su token respectivo) - Sea un ADMIN
+// TODO ESTO: **Seguridad** - Asegurar que la persona que esta haciendo modificaciones este logeado (con su token respectivo) - Sea un ADMIN
 const validarJWT = async ( req = request, res = response , next ) => {
 
-    const token = req.header('x-token');
+    const token = req.header('x-token'); // Establecemos un header que tendrá que venir en la peticion HTTP
 
     // Aseguramos que exista un token (Metodo de seguridad). Cambia cada vez que el usuario se logea
         if( !token ) {

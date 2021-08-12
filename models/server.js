@@ -1,6 +1,9 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const cors = require('cors');
+
 const { dbConnection } = require('../database/config');
+
 
 
 
@@ -12,6 +15,7 @@ class Server {
         this.app    = express();
         this.port   = process.env.PORT;
 
+        // Paths
         this.usuariosPath   = '/api/usuarios';
         this.authPath       = '/api/auth';
         this.categoriasPath = '/api/categorias';
@@ -32,13 +36,13 @@ class Server {
         
        
     
-        // Conectar a la BD
+        // Ejecuta ConectarBD
         this.conectarDB();
 
-        // Middlewares
+        // Ejecuta Middlewares
         this.middlewares();
 
-        // Rutas de mi aplicación
+        // Ejecuta las rutas de mi aplicación
         this.routes();
     }
 
@@ -46,18 +50,27 @@ class Server {
 
     // Conectar DB
     async conectarDB() {
-        // <--- Aquí podemos crear mas conexiones para, POR EJEMPLO: si estamos en PRODUCCIÓN utilizar una BD u otra si estamos en DESARROLLO.
+        // <--- Aquí podemos crear mas conexiones para, POR EJEMPLO: si estamos en PRODUCCIÓN utilizar una BD y otra si estamos en DESARROLLO.
         await dbConnection();
     }
     
 
-    // Middlewares necesarios en el server
+    // Middlewares de express necesarios en el server
     middlewares() {
+
         // CORS: Restringe el acceso a la API, nosotros elegimos que sitios pueden acceder a este backend.
         this.app.use( cors() );
 
         // Directorio Publico
         this.app.use( express.static('public') );
+
+        // FileUpload - Carga de Archivos
+        this.app.use( fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath : true // Si en el metodo de cargar especificamos una carpeta y esta no existe, la crea.
+        }));
+
     }
 
 
@@ -80,12 +93,13 @@ class Server {
     }
 
 
-    // Escuchar puertoS
+    // Escuchar puertos
     listen() {
         this.app.listen( this.port , () => {
             console.log('Servidor corriendo en el puerto: ', process.env.PORT );
         } );
     }
+    
 }
 
 module.exports = Server;

@@ -11,7 +11,6 @@ const esAdmin = ( req = request , res = response , next ) => {
             });
         }
 
-
     const { rol , nombre } = req.usuario;
 
     // Validacion rol ADMIN
@@ -28,7 +27,9 @@ const esAdmin = ( req = request , res = response , next ) => {
 // Validar un grupo de roles - "Se puede usar para dar permisos a los roles que nosotros queramos."
 const tieneRol = ( ...roles ) => {
     return ( req = request , res = response , next ) => {
+
                             //console.log( roles , req.usuario.rol );  DEBUG!!!!
+
         // Validar que este middleware siempre vaya despues del validarJWT.
             if ( !req.usuario ) {
                 return res.status(401).json({
@@ -36,6 +37,7 @@ const tieneRol = ( ...roles ) => {
                 });
             }
 
+        // Validar roles
             if ( !roles.includes( req.usuario.rol ) ){
                 return res.json({
                     msg: `Su rol: ${ req.usuario.rol } no tiene los permisos suficientes. El servicio requiere uno de estos roles: ${ roles }`

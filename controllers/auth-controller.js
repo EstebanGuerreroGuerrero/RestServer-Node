@@ -4,11 +4,9 @@ const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/generar-jwt');
 const { googleVerify } = require('../helpers/google-verify');
-const { CLOUD_RESOURCE_MANAGER } = require('google-auth-library/build/src/auth/baseexternalclient');
 
 
-
-
+    // Login
     const login = async ( req = request , res = response ) => {
 
         const { correo , password } = req.body;
@@ -16,7 +14,7 @@ const { CLOUD_RESOURCE_MANAGER } = require('google-auth-library/build/src/auth/b
         try {
             const usuario = await Usuario.findOne({ correo });
 
-            // Verificar si el email existe ---------
+            // Verificar si encontro el email Usuario ---------
                 if( !usuario ) {
                     return res.status(400).json({
                         msg: 'Usuario no es correctos'
@@ -30,7 +28,7 @@ const { CLOUD_RESOURCE_MANAGER } = require('google-auth-library/build/src/auth/b
                     });
                 }
 
-            // Verificar la contraseña  ----------
+            // Validar la contraseña  ----------
                 const validPassword = bcryptjs.compareSync( password , usuario.password ); // Compara la contraseña que estan enviando con la que esta en la BD.
 
                 if( !validPassword ) {
@@ -67,7 +65,6 @@ const { CLOUD_RESOURCE_MANAGER } = require('google-auth-library/build/src/auth/b
         try {
 
             // CREAR USUARIO VIA GOOGLE-SIGN-IN ---
-
                 const { nombre , correo , img } = await googleVerify( id_token ); // Usamos google verify
                 
                 let usuario = await Usuario.findOne({ correo }) // Buscamos un usuario en la BD por su correo

@@ -9,24 +9,23 @@ const { validarCampos,
 
 const { esRoleValido , mailExiste , usuarioExiste } = require('../helpers/db-validators');
 
-
 const { usuariosGET, 
         usuariosPOST, 
         usuariosPUT, 
         usuariosPATCH, 
         usuariosDELETE } = require('../controllers/usuarios-controller');
 
+
+
 const router = Router(); 
 
 
 
 
-
-
-    // EndPoints GET, POST, DELETE, etc.
-// EJEMPLO:
-//  router.get( 'URL' , funcionCorrespondiente );
-
+/* EndPoints - GET, POST, DELETE, etc.
+     EJEMPLO:
+      router.get( 'URL' , opciones , funcionCorrespondiente );
+*/
     // Leer
     router.get( '/' , usuariosGET );
 

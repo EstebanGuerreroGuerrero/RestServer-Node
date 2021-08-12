@@ -104,9 +104,8 @@ const Usuario = require('../models/usuario');
 
         const { id } = req.params;
 
-
-        // Borramos usuario de la BD (no recomendable)
-        //      const usuario = await Usuario.findByIdAndDelete( id )
+                    // Borramos usuario de la BD (no recomendable)
+                    //      const usuario = await Usuario.findByIdAndDelete( id )
 
         // Cambiamos el estado del usuario
             const usuario = await Usuario.findByIdAndUpdate( id , { estado: false } );
