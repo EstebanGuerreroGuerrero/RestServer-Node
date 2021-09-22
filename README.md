@@ -1,4 +1,4 @@
 # RestServer-Node
-Node Rest Server Básico
+Node API rest server con Express, express router.
 
-Quizas sea necesario agregar las variables de entorno
+Es necesario revisar las Variables de Entorno necesarias del proyecto
